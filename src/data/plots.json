@@ -1,0 +1,952 @@
+{
+  "Plot 01": {
+    "id": "Plot 01",
+    "category": "Residential",
+    "dimensions": "30' x 44'",
+    "area": 147.47,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 02": {
+    "id": "Plot 02",
+    "category": "Residential",
+    "dimensions": "25' x 40'",
+    "area": 109.08,
+    "rate": 5500,
+    "status": "Sold",
+    "buyer": "Ramavtar Gurjar",
+    "points": []
+  },
+  "Plot 03": {
+    "id": "Plot 03",
+    "category": "Residential",
+    "dimensions": "35' x 55'",
+    "area": 213.75,
+    "rate": 5500,
+    "status": "Booked",
+    "buyer": "Suresh Choudhary",
+    "points": []
+  },
+  "Plot 04": {
+    "id": "Plot 04",
+    "category": "Residential",
+    "dimensions": "40' x 60'",
+    "area": 271.25,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 05": {
+    "id": "Plot 05",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 06": {
+    "id": "Plot 06",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Sold",
+    "buyer": "Mohan Lal Sharma",
+    "points": []
+  },
+  "Plot 07": {
+    "id": "Plot 07",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 08": {
+    "id": "Plot 08",
+    "category": "Residential",
+    "dimensions": "25' x 29'",
+    "area": 81.25,
+    "rate": 5500,
+    "status": "Booked",
+    "buyer": "Dinesh Verma",
+    "points": []
+  },
+  "Plot 09": {
+    "id": "Plot 09",
+    "category": "Residential",
+    "dimensions": "30' x 53'",
+    "area": 177.3,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 10": {
+    "id": "Plot 10",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 11": {
+    "id": "Plot 11",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 12": {
+    "id": "Plot 12",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Sold",
+    "buyer": "Kailash Chand",
+    "points": []
+  },
+  "Plot 13": {
+    "id": "Plot 13",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 14": {
+    "id": "Plot 14",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 15": {
+    "id": "Plot 15",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Booked",
+    "buyer": "Hanuman Sahai",
+    "points": []
+  },
+  "Plot 16": {
+    "id": "Plot 16",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 17": {
+    "id": "Plot 17",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 18": {
+    "id": "Plot 18",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Sold",
+    "buyer": "Bhagwan Sahay",
+    "points": []
+  },
+  "Plot 19": {
+    "id": "Plot 19",
+    "category": "Residential",
+    "dimensions": "25' x 51'",
+    "area": 142.55,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 20": {
+    "id": "Plot 20",
+    "category": "Residential",
+    "dimensions": "35' x 50'",
+    "area": 195.7,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 21": {
+    "id": "Plot 21",
+    "category": "Residential",
+    "dimensions": "25' x 50'",
+    "area": 138.88,
+    "rate": 5500,
+    "status": "Booked",
+    "buyer": "Gopal Lal",
+    "points": []
+  },
+  "Plot 22": {
+    "id": "Plot 22",
+    "category": "Residential",
+    "dimensions": "30' x 60'",
+    "area": 206.55,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 23": {
+    "id": "Plot 23",
+    "category": "Residential",
+    "dimensions": "25' x 50'",
+    "area": 178.94,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 24": {
+    "id": "Plot 24",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Sold",
+    "buyer": "Radheshyam Jat",
+    "points": []
+  },
+  "Plot 25": {
+    "id": "Plot 25",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 26": {
+    "id": "Plot 26",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 27": {
+    "id": "Plot 27",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 28": {
+    "id": "Plot 28",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Booked",
+    "buyer": "Sunil Kumar",
+    "points": []
+  },
+  "Plot 29": {
+    "id": "Plot 29",
+    "category": "Residential",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 30": {
+    "id": "Plot 30",
+    "category": "Residential",
+    "dimensions": "25' x 50'",
+    "area": 138.88,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 31": {
+    "id": "Plot 31",
+    "category": "Residential",
+    "dimensions": "25' x 50'",
+    "area": 138.88,
+    "rate": 5500,
+    "status": "Sold",
+    "buyer": "Pappu Ram",
+    "points": []
+  },
+  "Plot 32": {
+    "id": "Plot 32",
+    "category": "Residential",
+    "dimensions": "25' x 50'",
+    "area": 138.88,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 33": {
+    "id": "Plot 33",
+    "category": "Residential",
+    "dimensions": "25' x 50'",
+    "area": 138.88,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 34": {
+    "id": "Plot 34",
+    "category": "Residential",
+    "dimensions": "25' x 50'",
+    "area": 138.88,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 35": {
+    "id": "Plot 35",
+    "category": "Residential",
+    "dimensions": "25' x 50'",
+    "area": 138.88,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 36": {
+    "id": "Plot 36",
+    "category": "Residential",
+    "dimensions": "25' x 50' Corner",
+    "area": 171.52,
+    "rate": 5800,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 37": {
+    "id": "Plot 37",
+    "category": "Residential",
+    "dimensions": "25' x 50' Corner",
+    "area": 170.86,
+    "rate": 5800,
+    "status": "Booked",
+    "buyer": "Mahendra Singh",
+    "points": []
+  },
+  "Plot 38": {
+    "id": "Plot 38",
+    "category": "Residential",
+    "dimensions": "25' x 50'",
+    "area": 138.88,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 39": {
+    "id": "Plot 39",
+    "category": "Residential",
+    "dimensions": "25' x 50'",
+    "area": 138.88,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 40": {
+    "id": "Plot 40",
+    "category": "Residential",
+    "dimensions": "25' x 50'",
+    "area": 138.88,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 41": {
+    "id": "Plot 41",
+    "category": "Residential",
+    "dimensions": "25' x 50'",
+    "area": 138.88,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 42": {
+    "id": "Plot 42",
+    "category": "Residential",
+    "dimensions": "25' x 50'",
+    "area": 138.88,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 43": {
+    "id": "Plot 43",
+    "category": "Residential",
+    "dimensions": "25' x 50'",
+    "area": 138.88,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 44": {
+    "id": "Plot 44",
+    "category": "Residential",
+    "dimensions": "25' x 50'",
+    "area": 138.88,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 45": {
+    "id": "Plot 45",
+    "category": "Residential",
+    "dimensions": "25' x 30'",
+    "area": 82.86,
+    "rate": 5500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "Plot 46": {
+    "id": "Plot 46",
+    "category": "Residential",
+    "dimensions": "30' x 55' Corner",
+    "area": 182.19,
+    "rate": 5800,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-1": {
+    "id": "C-1",
+    "category": "Commercial Main Road",
+    "dimensions": "35' x 50'",
+    "area": 200.0,
+    "rate": 8500,
+    "status": "Sold",
+    "buyer": "Shree Shyam Traders",
+    "points": []
+  },
+  "C-2": {
+    "id": "C-2",
+    "category": "Commercial Main Road",
+    "dimensions": "33' x 50'",
+    "area": 190.48,
+    "rate": 8500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-3": {
+    "id": "C-3",
+    "category": "Commercial Main Road",
+    "dimensions": "35' x 55'",
+    "area": 222.77,
+    "rate": 8500,
+    "status": "Booked",
+    "buyer": "Vijay Agency",
+    "points": []
+  },
+  "C-4": {
+    "id": "C-4",
+    "category": "Commercial Main Road",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 8500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-5": {
+    "id": "C-5",
+    "category": "Commercial",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-6": {
+    "id": "C-6",
+    "category": "Commercial",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-7": {
+    "id": "C-7",
+    "category": "Commercial",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-8": {
+    "id": "C-8",
+    "category": "Commercial",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-9": {
+    "id": "C-9",
+    "category": "Commercial",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-10": {
+    "id": "C-10",
+    "category": "Commercial",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-11": {
+    "id": "C-11",
+    "category": "Commercial",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-12": {
+    "id": "C-12",
+    "category": "Commercial",
+    "dimensions": "40' x 50'",
+    "area": 222.22,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-13": {
+    "id": "C-13",
+    "category": "Commercial",
+    "dimensions": "40' x 50'",
+    "area": 222.22,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-14": {
+    "id": "C-14",
+    "category": "Commercial",
+    "dimensions": "40' x 50'",
+    "area": 222.22,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-15": {
+    "id": "C-15",
+    "category": "Commercial",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-16": {
+    "id": "C-16",
+    "category": "Commercial",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-17": {
+    "id": "C-17",
+    "category": "Commercial",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-18": {
+    "id": "C-18",
+    "category": "Commercial",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-19": {
+    "id": "C-19",
+    "category": "Commercial",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-20": {
+    "id": "C-20",
+    "category": "Commercial",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-21": {
+    "id": "C-21",
+    "category": "Commercial",
+    "dimensions": "30' x 50'",
+    "area": 166.66,
+    "rate": 7500,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "C-22": {
+    "id": "C-22",
+    "category": "Commercial Corner",
+    "dimensions": "35' x 50'",
+    "area": 199.3,
+    "rate": 7800,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-01": {
+    "id": "S-01",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-02": {
+    "id": "S-02",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-03": {
+    "id": "S-03",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-04": {
+    "id": "S-04",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Booked",
+    "buyer": "Shop Keeper 4",
+    "points": []
+  },
+  "S-05": {
+    "id": "S-05",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-06": {
+    "id": "S-06",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-07": {
+    "id": "S-07",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-08": {
+    "id": "S-08",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Booked",
+    "buyer": "Shop Keeper 8",
+    "points": []
+  },
+  "S-09": {
+    "id": "S-09",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-10": {
+    "id": "S-10",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-11": {
+    "id": "S-11",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-12": {
+    "id": "S-12",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Booked",
+    "buyer": "Shop Keeper 12",
+    "points": []
+  },
+  "S-13": {
+    "id": "S-13",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-14": {
+    "id": "S-14",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-15": {
+    "id": "S-15",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-16": {
+    "id": "S-16",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Booked",
+    "buyer": "Shop Keeper 16",
+    "points": []
+  },
+  "S-17": {
+    "id": "S-17",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-18": {
+    "id": "S-18",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-19": {
+    "id": "S-19",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-20": {
+    "id": "S-20",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Booked",
+    "buyer": "Shop Keeper 20",
+    "points": []
+  },
+  "S-21": {
+    "id": "S-21",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-22": {
+    "id": "S-22",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-23": {
+    "id": "S-23",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-24": {
+    "id": "S-24",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Booked",
+    "buyer": "Shop Keeper 24",
+    "points": []
+  },
+  "S-25": {
+    "id": "S-25",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-26": {
+    "id": "S-26",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  },
+  "S-27": {
+    "id": "S-27",
+    "category": "Shop Plot",
+    "dimensions": "10' x 25'",
+    "area": 27.77,
+    "rate": 12000,
+    "status": "Available",
+    "buyer": "",
+    "points": []
+  }
+}
