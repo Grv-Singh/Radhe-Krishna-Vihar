@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import { plotsData } from './data'
 import './App.css'
 
@@ -10,6 +10,18 @@ const SECTION_TYPES = [
   { key: 'Commercial',     label: '🏢 Commercial Plots',     prefix: 'C-' },
   { key: 'Shop',           label: '🛒 Shop Plots',           prefix: 'S-' },
 ]
+
+const STATUS_COLORS = {
+  Available: 'rgba(34, 197, 94, 0.4)',
+  Booked: 'rgba(245, 158, 11, 0.4)',
+  Sold: 'rgba(239, 68, 68, 0.4)'
+};
+
+const STATUS_STROKES = {
+  Available: '#22c55e',
+  Booked: '#f59e0b',
+  Sold: '#ef4444'
+};
 
 function PlotCard({ plot, onToggle }) {
   const statusClass = plot.status.toLowerCase()
@@ -32,17 +44,44 @@ function PlotCard({ plot, onToggle }) {
 }
 
 export default function App() {
-  const [plots, setPlots] = useState(plotsData)
-  const [statusFilter, setStatusFilter] = useState('All')
+  const [authStatus, setAuthStatus] = useState('pending'); // 'pending' | 'view' | 'edit'
+  const [pin, setPin] = useState('');
+  
+  const [plots, setPlots] = useState(plotsData);
+  const [statusFilter, setStatusFilter] = useState('All');
+
+  const [imageSize, setImageSize] = useState({ width: 2000, height: 1500 });
+  const imgRef = useRef(null);
+
+  useEffect(() => {
+    if (imgRef.current) {
+      const { naturalWidth, naturalHeight } = imgRef.current;
+      if (naturalWidth) setImageSize({ width: naturalWidth, height: naturalHeight });
+    }
+  }, []);
+
+  const handleImageLoad = (e) => {
+    setImageSize({ width: e.target.naturalWidth, height: e.target.naturalHeight });
+  };
+
+  const handlePinSubmit = (e) => {
+    e.preventDefault();
+    if (pin === '5950') {
+      setAuthStatus('edit');
+    } else {
+      alert('Incorrect PIN');
+    }
+  };
 
   const togglePlotStatus = (id) => {
+    if (authStatus !== 'edit') return;
     setPlots(prev => prev.map(p => {
       if (p.id !== id) return p;
       const statuses = ['Available', 'Booked', 'Sold'];
       const nextIdx = (statuses.indexOf(p.status) + 1) % statuses.length;
       return { ...p, status: statuses[nextIdx] };
     }))
-  }
+  };
 
   const stats = useMemo(() => ({
     total:     plots.length,
@@ -69,6 +108,30 @@ export default function App() {
     { value: 'Sold',      label: '🔴 Sold',       cls: 'sold' },
   ]
 
+  if (authStatus === 'pending') {
+    return (
+      <div className="pin-container">
+        <div className="pin-box">
+          <h2>Radha Krishna Vihar</h2>
+          <p>Please enter PIN to edit, or proceed to View.</p>
+          <form onSubmit={handlePinSubmit}>
+            <input 
+              type="password" 
+              placeholder="Enter PIN" 
+              value={pin}
+              onChange={(e) => setPin(e.target.value)}
+              className="pin-input"
+              autoFocus
+            />
+            <button type="submit" className="pin-btn">Submit PIN</button>
+          </form>
+          <div className="pin-divider">OR</div>
+          <button className="view-btn" onClick={() => setAuthStatus('view')}>View Only</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="app">
       {/* Header */}
@@ -82,7 +145,59 @@ export default function App() {
           <div className="legend-item"><span className="legend-dot booked" />Booked</div>
           <div className="legend-item"><span className="legend-dot sold" />Sold</div>
         </div>
+        <div style={{ marginLeft: 'auto' }}>
+           <span style={{ fontSize: '0.8rem', marginRight: '10px' }}>Mode: {authStatus === 'edit' ? 'Edit' : 'View'}</span>
+           <button onClick={() => setAuthStatus('pending')} style={{ padding: '4px 10px', borderRadius: '4px', border: '1px solid #fff', background: 'transparent', color: '#fff', cursor: 'pointer' }}>Logout</button>
+        </div>
       </header>
+
+      {/* Map UI */}
+      <div className="map-wrapper">
+        <div className="map-inner">
+          <img 
+            ref={imgRef}
+            src="./site_plan.png" 
+            className="map-image" 
+            alt="Site Plan" 
+            onLoad={handleImageLoad}
+          />
+          <svg 
+            className="svg-overlay"
+            viewBox={`0 0 ${imageSize.width} ${imageSize.height}`}
+            width="100%" 
+            height="100%"
+          >
+            {plots.map(plot => {
+              if (!plot.points || plot.points.length === 0) return null;
+              const pointsStr = plot.points.map(p => `${p.x},${p.y}`).join(' ');
+              return (
+                <polygon 
+                  key={plot.id}
+                  points={pointsStr}
+                  fill={STATUS_COLORS[plot.status] || 'rgba(0,0,0,0.1)'}
+                  stroke={STATUS_STROKES[plot.status] || '#ccc'}
+                  strokeWidth={2}
+                  style={{ cursor: authStatus === 'edit' ? 'pointer' : 'default', transition: 'all 0.2s' }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    togglePlotStatus(plot.id);
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.setAttribute('stroke-width', '4');
+                    e.currentTarget.setAttribute('stroke', '#fff');
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.setAttribute('stroke-width', '2');
+                    e.currentTarget.setAttribute('stroke', STATUS_STROKES[plot.status] || '#ccc');
+                  }}
+                >
+                  <title>{plot.id} - {plot.status}</title>
+                </polygon>
+              );
+            })}
+          </svg>
+        </div>
+      </div>
 
       {/* Stats */}
       <div className="stats-bar">
