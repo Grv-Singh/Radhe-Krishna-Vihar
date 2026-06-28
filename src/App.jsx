@@ -11,12 +11,17 @@ const SECTION_TYPES = [
   { key: 'Shop',           label: '🛒 Shop Plots',           prefix: 'S-' },
 ]
 
-function PlotCard({ plot }) {
+function PlotCard({ plot, onToggle }) {
   const statusClass = plot.status.toLowerCase()
   const value = plot.sqyd * plot.rate
 
   return (
-    <div className={`plot-card ${statusClass}`} title={`${plot.id} — ${plot.type}\n${plot.size} | ${plot.sqyd} Sq.Yd\n${FORMAT_INR(value)}${plot.buyer ? `\nBuyer: ${plot.buyer}` : ''}`}>
+    <div 
+      className={`plot-card ${statusClass}`} 
+      title={`${plot.id} — ${plot.type}\n${plot.size} | ${plot.sqyd} Sq.Yd\n${FORMAT_INR(value)}${plot.buyer ? `\nBuyer: ${plot.buyer}` : ''}`}
+      onClick={onToggle}
+      style={{ cursor: 'pointer', userSelect: 'none' }}
+    >
       <div className="plot-id">{plot.id}</div>
       <div className="plot-size">{plot.size}</div>
       <div className="plot-status">{plot.status}</div>
@@ -27,25 +32,35 @@ function PlotCard({ plot }) {
 }
 
 export default function App() {
+  const [plots, setPlots] = useState(plotsData)
   const [statusFilter, setStatusFilter] = useState('All')
 
+  const togglePlotStatus = (id) => {
+    setPlots(prev => prev.map(p => {
+      if (p.id !== id) return p;
+      const statuses = ['Available', 'Booked', 'Sold'];
+      const nextIdx = (statuses.indexOf(p.status) + 1) % statuses.length;
+      return { ...p, status: statuses[nextIdx] };
+    }))
+  }
+
   const stats = useMemo(() => ({
-    total:     plotsData.length,
-    available: plotsData.filter(p => p.status === 'Available').length,
-    booked:    plotsData.filter(p => p.status === 'Booked').length,
-    sold:      plotsData.filter(p => p.status === 'Sold').length,
-  }), [])
+    total:     plots.length,
+    available: plots.filter(p => p.status === 'Available').length,
+    booked:    plots.filter(p => p.status === 'Booked').length,
+    sold:      plots.filter(p => p.status === 'Sold').length,
+  }), [plots])
 
   const sections = useMemo(() => {
     const filtered = statusFilter === 'All'
-      ? plotsData
-      : plotsData.filter(p => p.status === statusFilter)
+      ? plots
+      : plots.filter(p => p.status === statusFilter)
 
     return SECTION_TYPES.map(sec => ({
       ...sec,
       plots: filtered.filter(p => p.type.includes(sec.key)),
     })).filter(s => s.plots.length > 0)
-  }, [statusFilter])
+  }, [plots, statusFilter])
 
   const STATUS_BTNS = [
     { value: 'All',       label: 'All',       cls: 'all' },
@@ -121,7 +136,11 @@ export default function App() {
             </div>
             <div className={`plot-grid ${sec.key === 'Shop' ? 'shops' : ''}`}>
               {sec.plots.map(plot => (
-                <PlotCard key={plot.id} plot={plot} />
+                <PlotCard 
+                  key={plot.id} 
+                  plot={plot} 
+                  onToggle={() => togglePlotStatus(plot.id)} 
+                />
               ))}
             </div>
           </div>
