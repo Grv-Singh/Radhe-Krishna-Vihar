@@ -1,0 +1,299 @@
+/* ── Layout ─────────────────────────────────────────── */
+.app {
+  min-height: 100vh;
+  background: #eef2f7;
+}
+
+/* ── Header ─────────────────────────────────────────── */
+.site-header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+  color: #fff;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+}
+
+.header-title h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #fff;
+}
+
+.header-title p {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.55);
+  margin-top: 2px;
+}
+
+/* ── Legend ─────────────────────────────────────────── */
+.legend {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+}
+
+.legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.legend-dot.available { background: #22c55e; }
+.legend-dot.booked    { background: #f59e0b; }
+.legend-dot.sold      { background: #ef4444; }
+
+/* ── Stats Bar ───────────────────────────────────────── */
+.stats-bar {
+  background: #fff;
+  border-bottom: 1px solid #dde3ec;
+  padding: 0.75rem 2rem;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.stat-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.stat-chip .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.stat-chip .dot.green  { background: #22c55e; }
+.stat-chip .dot.yellow { background: #f59e0b; }
+.stat-chip .dot.red    { background: #ef4444; }
+.stat-chip .dot.gray   { background: #94a3b8; }
+
+.stat-num {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1a1a2e;
+}
+
+/* ── Filter Controls ─────────────────────────────────── */
+.controls {
+  background: #fff;
+  border-bottom: 1px solid #dde3ec;
+  padding: 0.75rem 2rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.controls-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-right: 0.25rem;
+}
+
+.filter-btn {
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  border: 1.5px solid #dde3ec;
+  background: #f8fafc;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: #555;
+}
+
+.filter-btn:hover { background: #e8eef5; border-color: #c5cfd9; }
+
+.filter-btn.active {
+  color: #fff;
+  border-color: transparent;
+}
+
+.filter-btn.active.all       { background: #1a1a2e; }
+.filter-btn.active.available { background: #16a34a; }
+.filter-btn.active.booked    { background: #d97706; }
+.filter-btn.active.sold      { background: #dc2626; }
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: #dde3ec;
+  margin: 0 0.25rem;
+}
+
+/* ── Sections ────────────────────────────────────────── */
+.content {
+  padding: 1.5rem 2rem 3rem;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.section-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #94a3b8;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #dde3ec;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-count {
+  background: #e2e8f0;
+  color: #64748b;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+
+/* ── Plot Grid ───────────────────────────────────────── */
+.plot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+.plot-grid.shops {
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+}
+
+/* ── Plot Card ───────────────────────────────────────── */
+.plot-card {
+  border-radius: 10px;
+  padding: 0.9rem 0.8rem;
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 2px solid transparent;
+  user-select: none;
+}
+
+.plot-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  border-radius: 10px 10px 0 0;
+}
+
+.plot-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+/* Available — green */
+.plot-card.available {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+.plot-card.available::before { background: #22c55e; }
+.plot-card.available .plot-id { color: #15803d; }
+.plot-card.available .plot-status { color: #16a34a; }
+
+/* Booked — yellow/amber */
+.plot-card.booked {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+.plot-card.booked::before { background: #f59e0b; }
+.plot-card.booked .plot-id { color: #b45309; }
+.plot-card.booked .plot-status { color: #d97706; }
+
+/* Sold — red */
+.plot-card.sold {
+  background: #fff1f2;
+  border-color: #fecdd3;
+}
+.plot-card.sold::before { background: #ef4444; }
+.plot-card.sold .plot-id { color: #b91c1c; }
+.plot-card.sold .plot-status { color: #dc2626; }
+
+.plot-id {
+  font-size: 1rem;
+  font-weight: 800;
+  margin-bottom: 3px;
+}
+
+.plot-size {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.plot-status {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.plot-buyer {
+  font-size: 0.68rem;
+  color: #475569;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed rgba(0,0,0,0.1);
+}
+
+.plot-value {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+/* ── No results ──────────────────────────────────────── */
+.no-results {
+  text-align: center;
+  padding: 3rem;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 640px) {
+  .site-header { padding: 1rem; }
+  .content { padding: 1rem; }
+  .stats-bar, .controls { padding: 0.75rem 1rem; gap: 0.75rem; }
+  .plot-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+}
