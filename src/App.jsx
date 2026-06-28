@@ -156,10 +156,14 @@ export default function App() {
         <div className="map-inner">
           <img 
             ref={imgRef}
-            src="./site_plan.png" 
+            src={`${import.meta.env.BASE_URL}site_plan.png`}
             className="map-image" 
             alt="Site Plan" 
             onLoad={handleImageLoad}
+            onError={(e) => {
+              console.error("Failed to load map image from:", e.target.src);
+              e.target.style.display = 'none';
+            }}
           />
           <svg 
             className="svg-overlay"
