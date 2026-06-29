@@ -81,6 +81,39 @@ export default function App() {
   const [sizeFilter, setSizeFilter] = useState('All');
   const [highlightedPlotId, setHighlightedPlotId] = useState(null);
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  
+  // TODO: Add your Google Apps Script Web App URL here
+  const GOOGLE_SHEETS_API_URL = ""; 
+
+  useEffect(() => {
+    if (!GOOGLE_SHEETS_API_URL) return;
+    
+    const fetchPlots = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(GOOGLE_SHEETS_API_URL);
+        const result = await res.json();
+        if (result.status === 'success' && result.data.length > 0) {
+          // Parse values safely
+          const validData = result.data.filter(p => p.id).map(p => ({
+            ...p,
+            sqyd: parseFloat(p.sqyd) || 0,
+            rate: parseFloat(p.rate) || 0
+          }));
+          setPlots(validData);
+        } else {
+          setError("Failed to load live data");
+        }
+      } catch (e) {
+        setError("Error connecting to Google Sheets");
+      }
+      setLoading(false);
+    }
+    fetchPlots();
+  }, []);
+
   const [imageSize, setImageSize] = useState({ width: 2000, height: 1500 });
   const imgRef = useRef(null);
 
@@ -106,14 +139,30 @@ export default function App() {
     }
   };
 
-  const togglePlotStatus = (id) => {
+  const togglePlotStatus = async (id) => {
     if (authStatus !== 'edit') return;
-    setPlots(prev => prev.map(p => {
-      if (p.id !== id) return p;
-      const statuses = ['Available', 'Booked', 'Hold', 'Sold'];
-      const nextIdx = (statuses.indexOf(p.status) + 1) % statuses.length;
-      return { ...p, status: statuses[nextIdx] };
-    }))
+    
+    const plotToUpdate = plots.find(p => p.id === id);
+    if (!plotToUpdate) return;
+    
+    const statuses = ['Available', 'Booked', 'Hold', 'Sold'];
+    const nextIdx = (statuses.indexOf(plotToUpdate.status) + 1) % statuses.length;
+    const nextStatus = statuses[nextIdx];
+
+    // Optimistic UI Update
+    setPlots(prev => prev.map(p => p.id === id ? { ...p, status: nextStatus } : p));
+
+    // Sync to Google Sheets
+    if (GOOGLE_SHEETS_API_URL) {
+      try {
+        await fetch(GOOGLE_SHEETS_API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ id, status: nextStatus })
+        });
+      } catch (err) {
+        console.error("Failed to sync to Google Sheets", err);
+      }
+    }
   };
 
   const handleDownloadCSV = () => {
