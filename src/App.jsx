@@ -140,7 +140,21 @@ export default function App() {
       if (weightA !== weightB) return weightA - weightB;
       return a.id.localeCompare(b.id, undefined, { numeric: true, sensitivity: 'base' });
     });
-  }, [plots, statusFilter])
+  }, [plots, statusFilter, sizeFilter])
+
+  const groupedPlots = useMemo(() => {
+    const groups = [
+      { title: 'Commercial Plots', prefix: 'C', items: [] },
+      { title: 'Shops', prefix: 'S', items: [] },
+      { title: 'Residential Plots', prefix: 'Plot', items: [] }
+    ];
+    sortedPlots.forEach(p => {
+      if (p.id.startsWith('C')) groups[0].items.push(p);
+      else if (p.id.startsWith('S')) groups[1].items.push(p);
+      else groups[2].items.push(p);
+    });
+    return groups.filter(g => g.items.length > 0);
+  }, [sortedPlots]);
 
   const STATUS_BTNS = [
     { value: 'All',       label: 'All',       cls: 'all', dot: null },
@@ -318,11 +332,11 @@ export default function App() {
       </div>
 
       {/* Progress Bar */}
-      <div className="progress-container">
-        <div className="progress-bar sold" style={{ width: `${(stats.sold / stats.total) * 100}%` }} title="Sold"></div>
-        <div className="progress-bar hold" style={{ width: `${(stats.hold / stats.total) * 100}%` }} title="Hold"></div>
-        <div className="progress-bar booked" style={{ width: `${(stats.booked / stats.total) * 100}%` }} title="Booked"></div>
-        <div className="progress-bar available" style={{ width: `${(stats.available / stats.total) * 100}%` }} title="Available"></div>
+      <div className="progress-container" style={{ height: '24px', borderRadius: '12px', marginTop: '12px' }}>
+        {stats.sold > 0 && <div className="progress-bar sold" style={{ width: `${(stats.sold / stats.total) * 100}%` }} title="Sold">{Math.round((stats.sold / stats.total) * 100)}%</div>}
+        {stats.hold > 0 && <div className="progress-bar hold" style={{ width: `${(stats.hold / stats.total) * 100}%`, color: '#333' }} title="Hold">{Math.round((stats.hold / stats.total) * 100)}%</div>}
+        {stats.booked > 0 && <div className="progress-bar booked" style={{ width: `${(stats.booked / stats.total) * 100}%` }} title="Booked">{Math.round((stats.booked / stats.total) * 100)}%</div>}
+        {stats.available > 0 && <div className="progress-bar available" style={{ width: `${(stats.available / stats.total) * 100}%`, color: '#333' }} title="Available">{Math.round((stats.available / stats.total) * 100)}%</div>}
       </div>
 
       {/* Filters */}
@@ -362,10 +376,11 @@ export default function App() {
           <div className="no-results">No plots match the selected filter.</div>
         )}
 
-        {sortedPlots.length > 0 && (
-          <div className="section">
+        {groupedPlots.map((group, idx) => (
+          <div className="section" key={idx} style={{ marginBottom: '2rem' }}>
+            <h2 style={{ color: 'rgba(255,255,255,0.9)', marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', fontSize: '1.2rem', textAlign: 'left' }}>{group.title}</h2>
             <div className="plot-grid">
-              {sortedPlots.map(plot => (
+              {group.items.map(plot => (
                 <PlotCard 
                   key={plot.id} 
                   plot={plot} 
@@ -388,7 +403,7 @@ export default function App() {
               ))}
             </div>
           </div>
-        )}
+        ))}
       </main>
     </div>
   )
