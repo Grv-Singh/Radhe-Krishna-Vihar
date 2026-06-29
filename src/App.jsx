@@ -5,40 +5,34 @@ import './App.css'
 const FORMAT_INR = (val) =>
   new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val)
 
-const SECTION_TYPES = [
-  { key: 'Residential',    label: '🏠 Residential Plots',    prefix: 'Plot' },
-  { key: 'Commercial',     label: '🏢 Commercial Plots',     prefix: 'C-' },
-  { key: 'Shop',           label: '🛒 Shop Plots',           prefix: 'S-' },
-]
-
 const STATUS_COLORS = {
-  Available: 'rgba(34, 197, 94, 0.4)',
-  Booked: 'rgba(245, 158, 11, 0.4)',
-  Sold: 'rgba(239, 68, 68, 0.4)'
+  Available: 'rgba(255, 255, 255, 0.6)',
+  Booked: 'rgba(34, 197, 94, 0.4)',
+  Hold: 'rgba(234, 179, 8, 0.4)',
+  Sold: 'rgba(236, 72, 153, 0.4)'
 };
 
 const STATUS_STROKES = {
-  Available: '#22c55e',
-  Booked: '#f59e0b',
-  Sold: '#ef4444'
+  Available: '#d1d5db',
+  Booked: '#22c55e',
+  Hold: '#eab308',
+  Sold: '#ec4899'
 };
 
-function PlotCard({ plot, onToggle }) {
+function PlotCard({ plot, isHighlighted, onClick }) {
   const statusClass = plot.status.toLowerCase()
-  const value = plot.sqyd * plot.rate
+  const highlightClass = isHighlighted ? 'highlighted-card' : ''
 
   return (
     <div 
-      className={`plot-card ${statusClass}`} 
-      title={`${plot.id} — ${plot.type}\n${plot.size} | ${plot.sqyd} Sq.Yd\n${FORMAT_INR(value)}${plot.buyer ? `\nBuyer: ${plot.buyer}` : ''}`}
-      onClick={onToggle}
+      id={`card-${plot.id}`}
+      className={`plot-card ${statusClass} ${highlightClass}`} 
+      onClick={onClick}
       style={{ cursor: 'pointer', userSelect: 'none' }}
     >
       <div className="plot-id">{plot.id}</div>
-      <div className="plot-size">{plot.size}</div>
+      <div className="plot-size">{plot.sqyd} Sq.Yd</div>
       <div className="plot-status">{plot.status}</div>
-      {plot.buyer && <div className="plot-buyer">👤 {plot.buyer}</div>}
-      <div className="plot-value">{FORMAT_INR(value)}</div>
     </div>
   )
 }
@@ -49,15 +43,12 @@ export default function App() {
   
   const [plots, setPlots] = useState(plotsData);
   const [statusFilter, setStatusFilter] = useState('All');
+  const [highlightedPlotId, setHighlightedPlotId] = useState(null);
 
   const [imageSize, setImageSize] = useState({ width: 2000, height: 1500 });
   const imgRef = useRef(null);
 
-  // Editor states
-  const [editMode, setEditMode] = useState(false);
-  const [selectedPlotId, setSelectedPlotId] = useState('');
-  const [drawingPoints, setDrawingPoints] = useState([]);
-  const [isDrawing, setIsDrawing] = useState(false);
+
 
   useEffect(() => {
     if (imgRef.current) {
@@ -83,78 +74,46 @@ export default function App() {
     if (authStatus !== 'edit') return;
     setPlots(prev => prev.map(p => {
       if (p.id !== id) return p;
-      const statuses = ['Available', 'Booked', 'Sold'];
+      const statuses = ['Available', 'Booked', 'Hold', 'Sold'];
       const nextIdx = (statuses.indexOf(p.status) + 1) % statuses.length;
       return { ...p, status: statuses[nextIdx] };
     }))
   };
 
-  // Editor Functions
-  const handleMapClick = (e) => {
-    if (!editMode || !isDrawing) return;
-    
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * imageSize.width;
-    const y = ((e.clientY - rect.top) / rect.height) * imageSize.height;
-    
-    setDrawingPoints([...drawingPoints, { x: Math.round(x), y: Math.round(y) }]);
-  };
 
-  const startDrawing = () => {
-    if (!selectedPlotId) return;
-    setDrawingPoints([]);
-    setIsDrawing(true);
-  };
-
-  const finishDrawing = () => {
-    if (drawingPoints.length > 2 && selectedPlotId) {
-      setPlots(prev => prev.map(p => 
-        p.id === selectedPlotId ? { ...p, points: drawingPoints } : p
-      ));
-    }
-    setDrawingPoints([]);
-    setIsDrawing(false);
-  };
-
-  const cancelDrawing = () => {
-    setDrawingPoints([]);
-    setIsDrawing(false);
-  };
-
-  const exportDataJS = () => {
-    const fileContent = `export const plotsData = ${JSON.stringify(plots, null, 2)};`;
-    const dataStr = "data:text/javascript;charset=utf-8," + encodeURIComponent(fileContent);
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "data.js");
-    document.body.appendChild(downloadAnchorNode); 
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-  };
 
   const stats = useMemo(() => ({
     total:     plots.length,
     available: plots.filter(p => p.status === 'Available').length,
     booked:    plots.filter(p => p.status === 'Booked').length,
+    hold:      plots.filter(p => p.status === 'Hold').length,
     sold:      plots.filter(p => p.status === 'Sold').length,
   }), [plots])
 
-  const sections = useMemo(() => {
+  const sortedPlots = useMemo(() => {
     const filtered = statusFilter === 'All'
       ? plots
       : plots.filter(p => p.status === statusFilter)
 
-    return SECTION_TYPES.map(sec => ({
-      ...sec,
-      plots: filtered.filter(p => p.type.includes(sec.key)),
-    })).filter(s => s.plots.length > 0)
+    return [...filtered].sort((a, b) => {
+      const getPrefixWeight = (id) => {
+        if (id.startsWith('C')) return 1;
+        if (id.startsWith('S')) return 2;
+        return 3;
+      };
+      const weightA = getPrefixWeight(a.id);
+      const weightB = getPrefixWeight(b.id);
+      if (weightA !== weightB) return weightA - weightB;
+      return a.id.localeCompare(b.id, undefined, { numeric: true, sensitivity: 'base' });
+    });
   }, [plots, statusFilter])
 
   const STATUS_BTNS = [
     { value: 'All',       label: 'All',       cls: 'all' },
-    { value: 'Available', label: '🟢 Available', cls: 'available' },
-    { value: 'Booked',    label: '🟡 Booked',    cls: 'booked' },
-    { value: 'Sold',      label: '🔴 Sold',       cls: 'sold' },
+    { value: 'Available', label: '⚪ Available', cls: 'available' },
+    { value: 'Booked',    label: '🟢 Booked',    cls: 'booked' },
+    { value: 'Hold',      label: '🟡 Hold',      cls: 'hold' },
+    { value: 'Sold',      label: '🩷 Sold',      cls: 'sold' },
   ]
 
   if (authStatus === 'pending') {
@@ -192,6 +151,7 @@ export default function App() {
         <div className="legend">
           <div className="legend-item"><span className="legend-dot available" />Available</div>
           <div className="legend-item"><span className="legend-dot booked" />Booked</div>
+          <div className="legend-item"><span className="legend-dot hold" />Hold</div>
           <div className="legend-item"><span className="legend-dot sold" />Sold</div>
         </div>
         <div style={{ marginLeft: 'auto' }}>
@@ -199,7 +159,6 @@ export default function App() {
            <button onClick={() => { 
              if (authStatus === 'edit') {
                setAuthStatus('view');
-               setEditMode(false);
              } else {
                setAuthStatus('pending');
              }
@@ -209,50 +168,11 @@ export default function App() {
         </div>
       </header>
 
-      {/* Editor Toolbar */}
-      {authStatus === 'edit' && (
-        <div className="editor-toolbar">
-          <button 
-            className={`edit-toggle-btn ${editMode ? 'active' : ''}`}
-            onClick={() => setEditMode(!editMode)}
-          >
-            {editMode ? 'Exit Mapping Mode' : 'Enter Mapping Mode'}
-          </button>
-          
-          {editMode && (
-            <div className="editor-controls">
-              <select 
-                value={selectedPlotId} 
-                onChange={e => setSelectedPlotId(e.target.value)}
-                className="plot-select"
-              >
-                <option value="">-- Select Plot to Map --</option>
-                {plots.map(p => (
-                  <option key={p.id} value={p.id}>{p.id} {p.points?.length ? '(Mapped)' : ''}</option>
-                ))}
-              </select>
-              
-              {!isDrawing ? (
-                <button className="tool-btn" onClick={startDrawing} disabled={!selectedPlotId}>
-                  Draw Polygon
-                </button>
-              ) : (
-                <>
-                  <button className="tool-btn success" onClick={finishDrawing}>Finish</button>
-                  <button className="tool-btn cancel" onClick={cancelDrawing}>Cancel</button>
-                  <span className="draw-hint">Click on map to add points...</span>
-                </>
-              )}
-              
-              <button className="tool-btn export" onClick={exportDataJS}>Export data.js</button>
-            </div>
-          )}
-        </div>
-      )}
+
 
       {/* Map UI */}
       <div className="map-wrapper">
-        <div className="map-inner" onClick={handleMapClick} style={{ cursor: isDrawing ? 'crosshair' : 'default' }}>
+        <div className="map-inner">
           <img 
             ref={imgRef}
             src={`${import.meta.env.BASE_URL}site_plan.png`}
@@ -273,36 +193,39 @@ export default function App() {
             {plots.map(plot => {
               if (!plot.points || plot.points.length === 0) return null;
               const pointsStr = plot.points.map(p => `${p.x},${p.y}`).join(' ');
-              const isSelected = selectedPlotId === plot.id && editMode;
+              const isHighlighted = highlightedPlotId === plot.id;
               return (
                 <polygon 
                   key={plot.id}
                   points={pointsStr}
-                  fill={STATUS_COLORS[plot.status] || 'rgba(0,0,0,0.1)'}
-                  stroke={isSelected ? '#3b82f6' : (STATUS_STROKES[plot.status] || '#ccc')}
-                  strokeWidth={isSelected ? 4 : 2}
-                  style={{ cursor: authStatus === 'edit' && !isDrawing ? 'pointer' : 'default', transition: 'all 0.2s' }}
+                  fill={isHighlighted ? 'rgba(59, 130, 246, 0.6)' : (STATUS_COLORS[plot.status] || 'rgba(0,0,0,0.1)')}
+                  stroke={isHighlighted ? '#2563eb' : (STATUS_STROKES[plot.status] || '#ccc')}
+                  strokeWidth={isHighlighted ? 4 : 2}
+                  style={{ cursor: authStatus === 'edit' ? 'pointer' : 'default', transition: 'all 0.2s' }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (editMode && isDrawing) {
-                       handleMapClick(e);
-                    } else if (editMode && !isDrawing) {
-                       setSelectedPlotId(plot.id);
-                    } else if (authStatus === 'edit') {
+                    if (authStatus === 'edit') {
                        togglePlotStatus(plot.id);
+                    } else {
+                       const newId = highlightedPlotId === plot.id ? null : plot.id;
+                       setHighlightedPlotId(newId);
+                       if (newId) {
+                         const card = document.getElementById(`card-${plot.id}`);
+                         if (card) {
+                           const yOffset = -window.innerHeight / 2;
+                           const y = card.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                           window.scrollTo({top: y, behavior: 'smooth'});
+                         }
+                       }
                     }
                   }}
                   onMouseEnter={(e) => {
-                    if(!isDrawing) {
-                      e.currentTarget.setAttribute('stroke-width', '4');
-                      e.currentTarget.setAttribute('stroke', '#fff');
-                    }
+                    e.currentTarget.setAttribute('stroke-width', '4');
+                    e.currentTarget.setAttribute('stroke', '#fff');
                   }}
                   onMouseLeave={(e) => {
-                    if(!isDrawing) {
-                      e.currentTarget.setAttribute('stroke-width', isSelected ? '4' : '2');
-                      e.currentTarget.setAttribute('stroke', isSelected ? '#3b82f6' : (STATUS_STROKES[plot.status] || '#ccc'));
-                    }
+                    e.currentTarget.setAttribute('stroke-width', isHighlighted ? '4' : '2');
+                    e.currentTarget.setAttribute('stroke', isHighlighted ? '#2563eb' : (STATUS_STROKES[plot.status] || '#ccc'));
                   }}
                 >
                   <title>{plot.id} - {plot.status}</title>
@@ -310,20 +233,7 @@ export default function App() {
               );
             })}
 
-            {isDrawing && drawingPoints.length > 0 && (
-              <>
-                <polygon 
-                  points={drawingPoints.map(p => `${p.x},${p.y}`).join(' ')}
-                  fill="rgba(59, 130, 246, 0.3)"
-                  stroke="#3b82f6"
-                  strokeWidth="3"
-                  strokeDasharray="5,5"
-                />
-                {drawingPoints.map((p, i) => (
-                  <circle key={i} cx={p.x} cy={p.y} r="6" fill="#3b82f6" />
-                ))}
-              </>
-            )}
+
           </svg>
         </div>
       </div>
@@ -336,17 +246,22 @@ export default function App() {
           Total Plots
         </div>
         <div className="stat-chip">
-          <span className="dot green" />
+          <span className="dot white" />
           <span className="stat-num">{stats.available}</span>
           Available
         </div>
         <div className="stat-chip">
-          <span className="dot yellow" />
+          <span className="dot green" />
           <span className="stat-num">{stats.booked}</span>
           Booked
         </div>
         <div className="stat-chip">
-          <span className="dot red" />
+          <span className="dot yellow" />
+          <span className="stat-num">{stats.hold}</span>
+          Hold
+        </div>
+        <div className="stat-chip">
+          <span className="dot pink" />
           <span className="stat-num">{stats.sold}</span>
           Sold
         </div>
@@ -368,27 +283,37 @@ export default function App() {
 
       {/* Plot Grid by section */}
       <main className="content">
-        {sections.length === 0 && (
+        {sortedPlots.length === 0 && (
           <div className="no-results">No plots match the selected filter.</div>
         )}
 
-        {sections.map(sec => (
-          <div className="section" key={sec.key}>
-            <div className="section-title">
-              {sec.label}
-              <span className="section-count">{sec.plots.length}</span>
-            </div>
-            <div className={`plot-grid ${sec.key === 'Shop' ? 'shops' : ''}`}>
-              {sec.plots.map(plot => (
+        {sortedPlots.length > 0 && (
+          <div className="section">
+            <div className="plot-grid">
+              {sortedPlots.map(plot => (
                 <PlotCard 
                   key={plot.id} 
                   plot={plot} 
-                  onToggle={() => togglePlotStatus(plot.id)} 
+                  isHighlighted={highlightedPlotId === plot.id}
+                  onClick={() => {
+                    if (authStatus === 'edit') {
+                      togglePlotStatus(plot.id);
+                    } else {
+                      const newId = highlightedPlotId === plot.id ? null : plot.id;
+                      setHighlightedPlotId(newId);
+                      if (newId) {
+                        const mapElem = document.querySelector('.map-wrapper');
+                        if (mapElem) {
+                          mapElem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                      }
+                    }
+                  }} 
                 />
               ))}
             </div>
           </div>
-        ))}
+        )}
       </main>
     </div>
   )
