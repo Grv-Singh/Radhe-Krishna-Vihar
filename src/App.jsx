@@ -50,6 +50,28 @@ function PlotCard({ plot, isHighlighted, onClick }) {
   )
 }
 
+const CircularProgress = ({ percent, color, label, value }) => {
+  const radius = 30;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (percent / 100) * circumference;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '10px' }}>
+      <div style={{ position: 'relative', width: '70px', height: '70px' }}>
+        <svg width="70" height="70" style={{ transform: 'rotate(-90deg)' }}>
+          <circle cx="35" cy="35" r={radius} fill="transparent" stroke="rgba(255,255,255,0.1)" strokeWidth="6" />
+          <circle cx="35" cy="35" r={radius} fill="transparent" stroke={color} strokeWidth="6"
+            strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} style={{ transition: 'stroke-dashoffset 1s ease', strokeLinecap: 'round' }} />
+        </svg>
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', fontWeight: 'bold' }}>
+          {value}
+        </div>
+      </div>
+      <div style={{ fontSize: '0.75rem', marginTop: '8px', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '1px', textAlign: 'center' }}>{label}</div>
+    </div>
+  )
+}
+
 export default function App() {
   const [authStatus, setAuthStatus] = useState('view'); // 'pending' | 'view' | 'edit'
   const [pin, setPin] = useState('');
@@ -302,41 +324,13 @@ export default function App() {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="stats-bar">
-        <div className="stat-chip">
-          <span className="dot gray" />
-          <span className="stat-num">{stats.total}</span>
-          Total Plots
-        </div>
-        <div className="stat-chip">
-          <span className="dot white" />
-          <span className="stat-num">{stats.available}</span>
-          Available
-        </div>
-        <div className="stat-chip">
-          <span className="dot green" />
-          <span className="stat-num">{stats.booked}</span>
-          Booked
-        </div>
-        <div className="stat-chip">
-          <span className="dot yellow" />
-          <span className="stat-num">{stats.hold}</span>
-          Hold
-        </div>
-        <div className="stat-chip">
-          <span className="dot pink" />
-          <span className="stat-num">{stats.sold}</span>
-          Sold
-        </div>
-      </div>
-
-      {/* Progress Bar */}
-      <div className="progress-container" style={{ height: '24px', borderRadius: '12px', marginTop: '12px' }}>
-        {stats.sold > 0 && <div className="progress-bar sold" style={{ width: `${(stats.sold / stats.total) * 100}%` }} title="Sold">{Math.round((stats.sold / stats.total) * 100)}%</div>}
-        {stats.hold > 0 && <div className="progress-bar hold" style={{ width: `${(stats.hold / stats.total) * 100}%`, color: '#333' }} title="Hold">{Math.round((stats.hold / stats.total) * 100)}%</div>}
-        {stats.booked > 0 && <div className="progress-bar booked" style={{ width: `${(stats.booked / stats.total) * 100}%` }} title="Booked">{Math.round((stats.booked / stats.total) * 100)}%</div>}
-        {stats.available > 0 && <div className="progress-bar available" style={{ width: `${(stats.available / stats.total) * 100}%`, color: '#333' }} title="Available">{Math.round((stats.available / stats.total) * 100)}%</div>}
+      {/* Dashboard */}
+      <div className="dashboard" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around', backgroundColor: 'rgba(0,0,0,0.2)', padding: '20px 10px', borderRadius: '12px', marginBottom: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
+        <CircularProgress percent={100} color="#64748b" label="Total Plots" value={stats.total} />
+        <CircularProgress percent={(stats.available / stats.total) * 100 || 0} color="#d1d5db" label="Available" value={stats.available} />
+        <CircularProgress percent={(stats.booked / stats.total) * 100 || 0} color="#22c55e" label="Booked" value={stats.booked} />
+        <CircularProgress percent={(stats.hold / stats.total) * 100 || 0} color="#eab308" label="Hold" value={stats.hold} />
+        <CircularProgress percent={(stats.sold / stats.total) * 100 || 0} color="#ec4899" label="Sold" value={stats.sold} />
       </div>
 
       {/* Filters */}
