@@ -59,15 +59,15 @@ const CircularProgress = ({ percent, color, label, value }) => {
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '10px' }}>
       <div style={{ position: 'relative', width: '70px', height: '70px' }}>
         <svg width="70" height="70" style={{ transform: 'rotate(-90deg)' }}>
-          <circle cx="35" cy="35" r={radius} fill="transparent" stroke="rgba(255,255,255,0.1)" strokeWidth="6" />
+          <circle cx="35" cy="35" r={radius} fill="transparent" stroke="#e2e8f0" strokeWidth="6" />
           <circle cx="35" cy="35" r={radius} fill="transparent" stroke={color} strokeWidth="6"
             strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} style={{ transition: 'stroke-dashoffset 1s ease', strokeLinecap: 'round' }} />
         </svg>
-        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', fontWeight: 'bold' }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', fontWeight: 'bold', color: '#1e293b' }}>
           {value}
         </div>
       </div>
-      <div style={{ fontSize: '0.75rem', marginTop: '8px', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '1px', textAlign: 'center' }}>{label}</div>
+      <div style={{ fontSize: '0.75rem', marginTop: '8px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px', textAlign: 'center', fontWeight: '600' }}>{label}</div>
     </div>
   )
 }
@@ -325,7 +325,7 @@ export default function App() {
       </div>
 
       {/* Dashboard */}
-      <div className="dashboard" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around', backgroundColor: 'rgba(0,0,0,0.2)', padding: '20px 10px', borderRadius: '12px', marginBottom: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
+      <div className="dashboard" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around', backgroundColor: '#ffffff', padding: '20px 10px', borderRadius: '12px', marginBottom: '20px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}>
         <CircularProgress percent={100} color="#64748b" label="Total Plots" value={stats.total} />
         <CircularProgress percent={(stats.available / stats.total) * 100 || 0} color="#d1d5db" label="Available" value={stats.available} />
         <CircularProgress percent={(stats.booked / stats.total) * 100 || 0} color="#22c55e" label="Booked" value={stats.booked} />
