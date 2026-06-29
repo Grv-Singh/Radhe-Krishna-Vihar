@@ -34,17 +34,18 @@ function PlotCard({ plot, isHighlighted, onClick }) {
       <div className="plot-size">{plot.sqyd} Sq.Yd</div>
       <div className="plot-status">{plot.status}</div>
 
-      <a 
-        href={`https://wa.me/?text=Plot%20${plot.id}%20(${plot.sqyd}%20Sq.Yd)%20is%20currently%20${plot.status}.`}
-        target="_blank" rel="noreferrer"
+      <div 
         className="wa-btn"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+          window.open(`https://wa.me/?text=Plot%20${plot.id}%20(${plot.sqyd}%20Sq.Yd)%20is%20currently%20${plot.status}.`, '_blank');
+        }}
         title="Share on WhatsApp"
       >
         <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
           <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.8 5.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
         </svg>
-      </a>
+      </div>
     </div>
   )
 }
@@ -142,11 +143,11 @@ export default function App() {
   }, [plots, statusFilter])
 
   const STATUS_BTNS = [
-    { value: 'All',       label: 'All',       cls: 'all' },
-    { value: 'Available', label: '⚪ Available', cls: 'available' },
-    { value: 'Booked',    label: '🟢 Booked',    cls: 'booked' },
-    { value: 'Hold',      label: '🟡 Hold',      cls: 'hold' },
-    { value: 'Sold',      label: '🩷 Sold',      cls: 'sold' },
+    { value: 'All',       label: 'All',       cls: 'all', dot: null },
+    { value: 'Available', label: 'Available', cls: 'available', dot: '#d1d5db' },
+    { value: 'Booked',    label: 'Booked',    cls: 'booked', dot: '#22c55e' },
+    { value: 'Hold',      label: 'Hold',      cls: 'hold', dot: '#eab308' },
+    { value: 'Sold',      label: 'Sold',      cls: 'sold', dot: '#ec4899' },
   ]
 
   const SIZE_BTNS = ['All', '< 100', '100 - 150', '> 150'];
@@ -181,7 +182,15 @@ export default function App() {
       <header className="site-header">
         <div className="header-title">
           <h1>Radha Krishna Vihar</h1>
-          <p>Salemabad Road, Village Roopangarh, Dist. Ajmer (Raj.)</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '4px' }}>
+            <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)' }}>Salemabad Road, Village Roopangarh, Dist. Ajmer (Raj.)</span>
+            <button onClick={() => window.open('https://maps.google.com/?q=Salemabad+Road,+Village+Roopangarh,+Dist.+Ajmer', '_blank')} style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '4px', padding: '2px 6px', color: '#fff', fontSize: '0.7rem', cursor: 'pointer' }}>
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              </svg>
+              View on Map
+            </button>
+          </div>
         </div>
         <div className="legend">
           <div className="legend-item"><span className="legend-dot available" />Available</div>
@@ -189,7 +198,7 @@ export default function App() {
           <div className="legend-item"><span className="legend-dot hold" />Hold</div>
           <div className="legend-item"><span className="legend-dot sold" />Sold</div>
         </div>
-        <div style={{ marginLeft: 'auto' }}>
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
            <span style={{ fontSize: '0.8rem', marginRight: '10px' }}>Mode: {authStatus === 'edit' ? 'Edit' : 'View'}</span>
            <button onClick={() => { 
              if (authStatus === 'edit') {
@@ -200,8 +209,11 @@ export default function App() {
            }} style={{ padding: '4px 10px', borderRadius: '4px', border: '1px solid #fff', background: 'transparent', color: '#fff', cursor: 'pointer', marginRight: '10px' }}>
              {authStatus === 'edit' ? 'Logout' : 'Admin Login'}
            </button>
-           <button onClick={handleDownloadCSV} style={{ padding: '4px 10px', borderRadius: '4px', border: '1px solid #fff', background: '#10b981', color: '#fff', cursor: 'pointer' }}>
-             📊 Export CSV
+           <button onClick={handleDownloadCSV} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '4px', border: '1px solid #10b981', background: '#10b981', color: '#fff', cursor: 'pointer' }}>
+             <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+               <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+             </svg>
+             Export CSV
            </button>
         </div>
       </header>
@@ -314,29 +326,34 @@ export default function App() {
       </div>
 
       {/* Filters */}
-      <div className="controls">
-        <span className="controls-label">Filter:</span>
-        {STATUS_BTNS.map(btn => (
-          <button
-            key={btn.value}
-            className={`filter-btn ${btn.cls} ${statusFilter === btn.value ? 'active' : ''}`}
-            onClick={() => setStatusFilter(btn.value)}
-          >
-            {btn.label}
-          </button>
-        ))}
+      <div className="controls" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '1rem' }}>
+        <div className="filter-row" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <span className="controls-label">Status Filter:</span>
+          {STATUS_BTNS.map(btn => (
+            <button
+              key={btn.value}
+              className={`filter-btn ${btn.cls} ${statusFilter === btn.value ? 'active' : ''}`}
+              onClick={() => setStatusFilter(btn.value)}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+            >
+              {btn.dot && <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: btn.dot, display: 'inline-block' }}></span>}
+              {btn.label}
+            </button>
+          ))}
+        </div>
         
-        <div className="divider"></div>
-        <span className="controls-label" style={{ marginLeft: '10px' }}>Size (Gaj):</span>
-        {SIZE_BTNS.map(btn => (
-          <button
-            key={btn}
-            className={`filter-btn ${sizeFilter === btn ? 'active all' : ''}`}
-            onClick={() => setSizeFilter(btn)}
-          >
-            {btn}
-          </button>
-        ))}
+        <div className="filter-row" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <span className="controls-label">Size (Gaj):</span>
+          {SIZE_BTNS.map(btn => (
+            <button
+              key={btn}
+              className={`filter-btn ${sizeFilter === btn ? 'active all' : ''}`}
+              onClick={() => setSizeFilter(btn)}
+            >
+              {btn}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Plot Grid by section */}
