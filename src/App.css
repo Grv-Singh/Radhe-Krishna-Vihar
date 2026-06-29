@@ -501,4 +501,44 @@
   font-weight: 500;
 }
 
+/* ── Progress Bar ──────────────────────────────────────── */
+.progress-container {
+  display: flex;
+  height: 6px;
+  background: #e2e8f0;
+  width: 100%;
+}
 
+.progress-bar {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.progress-bar.sold { background: #ec4899; }
+.progress-bar.hold { background: #eab308; }
+.progress-bar.booked { background: #22c55e; }
+.progress-bar.available { background: #d1d5db; }
+
+/* ── WhatsApp Button ──────────────────────────────────── */
+.wa-btn {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  width: 24px;
+  height: 24px;
+  background: #25D366;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 2;
+}
+
+.wa-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}

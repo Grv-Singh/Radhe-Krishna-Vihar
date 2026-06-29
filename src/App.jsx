@@ -33,6 +33,18 @@ function PlotCard({ plot, isHighlighted, onClick }) {
       <div className="plot-id">{plot.id}</div>
       <div className="plot-size">{plot.sqyd} Sq.Yd</div>
       <div className="plot-status">{plot.status}</div>
+
+      <a 
+        href={`https://wa.me/?text=Plot%20${plot.id}%20(${plot.sqyd}%20Sq.Yd)%20is%20currently%20${plot.status}.`}
+        target="_blank" rel="noreferrer"
+        className="wa-btn"
+        onClick={(e) => e.stopPropagation()}
+        title="Share on WhatsApp"
+      >
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.8 5.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+        </svg>
+      </a>
     </div>
   )
 }
@@ -43,6 +55,7 @@ export default function App() {
   
   const [plots, setPlots] = useState(plotsData);
   const [statusFilter, setStatusFilter] = useState('All');
+  const [sizeFilter, setSizeFilter] = useState('All');
   const [highlightedPlotId, setHighlightedPlotId] = useState(null);
 
   const [imageSize, setImageSize] = useState({ width: 2000, height: 1500 });
@@ -80,6 +93,20 @@ export default function App() {
     }))
   };
 
+  const handleDownloadCSV = () => {
+    const headers = ['Plot ID', 'Type', 'Sq.Yd', 'Status'];
+    const rows = plots.map(p => [p.id, p.type, p.sqyd, p.status]);
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + [headers.join(','), ...rows.map(e => e.join(','))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "plots_status.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
 
 
   const stats = useMemo(() => ({
@@ -91,9 +118,15 @@ export default function App() {
   }), [plots])
 
   const sortedPlots = useMemo(() => {
-    const filtered = statusFilter === 'All'
+    let filtered = statusFilter === 'All'
       ? plots
       : plots.filter(p => p.status === statusFilter)
+
+    if (sizeFilter !== 'All') {
+      if (sizeFilter === '< 100') filtered = filtered.filter(p => p.sqyd < 100);
+      else if (sizeFilter === '100 - 150') filtered = filtered.filter(p => p.sqyd >= 100 && p.sqyd <= 150);
+      else if (sizeFilter === '> 150') filtered = filtered.filter(p => p.sqyd > 150);
+    }
 
     return [...filtered].sort((a, b) => {
       const getPrefixWeight = (id) => {
@@ -115,6 +148,8 @@ export default function App() {
     { value: 'Hold',      label: '🟡 Hold',      cls: 'hold' },
     { value: 'Sold',      label: '🩷 Sold',      cls: 'sold' },
   ]
+
+  const SIZE_BTNS = ['All', '< 100', '100 - 150', '> 150'];
 
   if (authStatus === 'pending') {
     return (
@@ -162,8 +197,11 @@ export default function App() {
              } else {
                setAuthStatus('pending');
              }
-           }} style={{ padding: '4px 10px', borderRadius: '4px', border: '1px solid #fff', background: 'transparent', color: '#fff', cursor: 'pointer' }}>
+           }} style={{ padding: '4px 10px', borderRadius: '4px', border: '1px solid #fff', background: 'transparent', color: '#fff', cursor: 'pointer', marginRight: '10px' }}>
              {authStatus === 'edit' ? 'Logout' : 'Admin Login'}
+           </button>
+           <button onClick={handleDownloadCSV} style={{ padding: '4px 10px', borderRadius: '4px', border: '1px solid #fff', background: '#10b981', color: '#fff', cursor: 'pointer' }}>
+             📊 Export CSV
            </button>
         </div>
       </header>
@@ -267,6 +305,14 @@ export default function App() {
         </div>
       </div>
 
+      {/* Progress Bar */}
+      <div className="progress-container">
+        <div className="progress-bar sold" style={{ width: `${(stats.sold / stats.total) * 100}%` }} title="Sold"></div>
+        <div className="progress-bar hold" style={{ width: `${(stats.hold / stats.total) * 100}%` }} title="Hold"></div>
+        <div className="progress-bar booked" style={{ width: `${(stats.booked / stats.total) * 100}%` }} title="Booked"></div>
+        <div className="progress-bar available" style={{ width: `${(stats.available / stats.total) * 100}%` }} title="Available"></div>
+      </div>
+
       {/* Filters */}
       <div className="controls">
         <span className="controls-label">Filter:</span>
@@ -277,6 +323,18 @@ export default function App() {
             onClick={() => setStatusFilter(btn.value)}
           >
             {btn.label}
+          </button>
+        ))}
+        
+        <div className="divider"></div>
+        <span className="controls-label" style={{ marginLeft: '10px' }}>Size (Gaj):</span>
+        {SIZE_BTNS.map(btn => (
+          <button
+            key={btn}
+            className={`filter-btn ${sizeFilter === btn ? 'active all' : ''}`}
+            onClick={() => setSizeFilter(btn)}
+          >
+            {btn}
           </button>
         ))}
       </div>
