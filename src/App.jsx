@@ -53,6 +53,12 @@ export default function App() {
   const [imageSize, setImageSize] = useState({ width: 2000, height: 1500 });
   const imgRef = useRef(null);
 
+  // Editor states
+  const [editMode, setEditMode] = useState(false);
+  const [selectedPlotId, setSelectedPlotId] = useState('');
+  const [drawingPoints, setDrawingPoints] = useState([]);
+  const [isDrawing, setIsDrawing] = useState(false);
+
   useEffect(() => {
     if (imgRef.current) {
       const { naturalWidth, naturalHeight } = imgRef.current;
@@ -81,6 +87,49 @@ export default function App() {
       const nextIdx = (statuses.indexOf(p.status) + 1) % statuses.length;
       return { ...p, status: statuses[nextIdx] };
     }))
+  };
+
+  // Editor Functions
+  const handleMapClick = (e) => {
+    if (!editMode || !isDrawing) return;
+    
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * imageSize.width;
+    const y = ((e.clientY - rect.top) / rect.height) * imageSize.height;
+    
+    setDrawingPoints([...drawingPoints, { x: Math.round(x), y: Math.round(y) }]);
+  };
+
+  const startDrawing = () => {
+    if (!selectedPlotId) return;
+    setDrawingPoints([]);
+    setIsDrawing(true);
+  };
+
+  const finishDrawing = () => {
+    if (drawingPoints.length > 2 && selectedPlotId) {
+      setPlots(prev => prev.map(p => 
+        p.id === selectedPlotId ? { ...p, points: drawingPoints } : p
+      ));
+    }
+    setDrawingPoints([]);
+    setIsDrawing(false);
+  };
+
+  const cancelDrawing = () => {
+    setDrawingPoints([]);
+    setIsDrawing(false);
+  };
+
+  const exportDataJS = () => {
+    const fileContent = `export const plotsData = ${JSON.stringify(plots, null, 2)};`;
+    const dataStr = "data:text/javascript;charset=utf-8," + encodeURIComponent(fileContent);
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "data.js");
+    document.body.appendChild(downloadAnchorNode); 
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
   };
 
   const stats = useMemo(() => ({
@@ -147,13 +196,54 @@ export default function App() {
         </div>
         <div style={{ marginLeft: 'auto' }}>
            <span style={{ fontSize: '0.8rem', marginRight: '10px' }}>Mode: {authStatus === 'edit' ? 'Edit' : 'View'}</span>
-           <button onClick={() => setAuthStatus('pending')} style={{ padding: '4px 10px', borderRadius: '4px', border: '1px solid #fff', background: 'transparent', color: '#fff', cursor: 'pointer' }}>Logout</button>
+           <button onClick={() => { setAuthStatus('pending'); setEditMode(false); }} style={{ padding: '4px 10px', borderRadius: '4px', border: '1px solid #fff', background: 'transparent', color: '#fff', cursor: 'pointer' }}>Logout</button>
         </div>
       </header>
 
+      {/* Editor Toolbar */}
+      {authStatus === 'edit' && (
+        <div className="editor-toolbar">
+          <button 
+            className={`edit-toggle-btn ${editMode ? 'active' : ''}`}
+            onClick={() => setEditMode(!editMode)}
+          >
+            {editMode ? 'Exit Mapping Mode' : 'Enter Mapping Mode'}
+          </button>
+          
+          {editMode && (
+            <div className="editor-controls">
+              <select 
+                value={selectedPlotId} 
+                onChange={e => setSelectedPlotId(e.target.value)}
+                className="plot-select"
+              >
+                <option value="">-- Select Plot to Map --</option>
+                {plots.map(p => (
+                  <option key={p.id} value={p.id}>{p.id} {p.points?.length ? '(Mapped)' : ''}</option>
+                ))}
+              </select>
+              
+              {!isDrawing ? (
+                <button className="tool-btn" onClick={startDrawing} disabled={!selectedPlotId}>
+                  Draw Polygon
+                </button>
+              ) : (
+                <>
+                  <button className="tool-btn success" onClick={finishDrawing}>Finish</button>
+                  <button className="tool-btn cancel" onClick={cancelDrawing}>Cancel</button>
+                  <span className="draw-hint">Click on map to add points...</span>
+                </>
+              )}
+              
+              <button className="tool-btn export" onClick={exportDataJS}>Export data.js</button>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Map UI */}
       <div className="map-wrapper">
-        <div className="map-inner">
+        <div className="map-inner" onClick={handleMapClick} style={{ cursor: isDrawing ? 'crosshair' : 'default' }}>
           <img 
             ref={imgRef}
             src={`${import.meta.env.BASE_URL}site_plan.png`}
@@ -174,31 +264,57 @@ export default function App() {
             {plots.map(plot => {
               if (!plot.points || plot.points.length === 0) return null;
               const pointsStr = plot.points.map(p => `${p.x},${p.y}`).join(' ');
+              const isSelected = selectedPlotId === plot.id && editMode;
               return (
                 <polygon 
                   key={plot.id}
                   points={pointsStr}
                   fill={STATUS_COLORS[plot.status] || 'rgba(0,0,0,0.1)'}
-                  stroke={STATUS_STROKES[plot.status] || '#ccc'}
-                  strokeWidth={2}
-                  style={{ cursor: authStatus === 'edit' ? 'pointer' : 'default', transition: 'all 0.2s' }}
+                  stroke={isSelected ? '#3b82f6' : (STATUS_STROKES[plot.status] || '#ccc')}
+                  strokeWidth={isSelected ? 4 : 2}
+                  style={{ cursor: authStatus === 'edit' && !isDrawing ? 'pointer' : 'default', transition: 'all 0.2s' }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    togglePlotStatus(plot.id);
+                    if (editMode && isDrawing) {
+                       handleMapClick(e);
+                    } else if (editMode && !isDrawing) {
+                       setSelectedPlotId(plot.id);
+                    } else if (authStatus === 'edit') {
+                       togglePlotStatus(plot.id);
+                    }
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.setAttribute('stroke-width', '4');
-                    e.currentTarget.setAttribute('stroke', '#fff');
+                    if(!isDrawing) {
+                      e.currentTarget.setAttribute('stroke-width', '4');
+                      e.currentTarget.setAttribute('stroke', '#fff');
+                    }
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.setAttribute('stroke-width', '2');
-                    e.currentTarget.setAttribute('stroke', STATUS_STROKES[plot.status] || '#ccc');
+                    if(!isDrawing) {
+                      e.currentTarget.setAttribute('stroke-width', isSelected ? '4' : '2');
+                      e.currentTarget.setAttribute('stroke', isSelected ? '#3b82f6' : (STATUS_STROKES[plot.status] || '#ccc'));
+                    }
                   }}
                 >
                   <title>{plot.id} - {plot.status}</title>
                 </polygon>
               );
             })}
+
+            {isDrawing && drawingPoints.length > 0 && (
+              <>
+                <polygon 
+                  points={drawingPoints.map(p => `${p.x},${p.y}`).join(' ')}
+                  fill="rgba(59, 130, 246, 0.3)"
+                  stroke="#3b82f6"
+                  strokeWidth="3"
+                  strokeDasharray="5,5"
+                />
+                {drawingPoints.map((p, i) => (
+                  <circle key={i} cx={p.x} cy={p.y} r="6" fill="#3b82f6" />
+                ))}
+              </>
+            )}
           </svg>
         </div>
       </div>

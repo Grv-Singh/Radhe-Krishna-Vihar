@@ -407,3 +407,93 @@
   pointer-events: auto; /* Catch clicks */
 }
 
+/* ── Editor Toolbar ──────────────────────────────────────── */
+.editor-toolbar {
+  background: #fff;
+  border-bottom: 1px solid #dde3ec;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.edit-toggle-btn {
+  align-self: flex-start;
+  padding: 0.5rem 1rem;
+  background: #1a1a2e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.edit-toggle-btn.active {
+  background: #3b82f6;
+}
+
+.editor-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #dde3ec;
+}
+
+.plot-select {
+  padding: 0.4rem 0.75rem;
+  border: 1.5px solid #dde3ec;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  min-width: 200px;
+}
+
+.tool-btn {
+  padding: 0.4rem 1rem;
+  background: #fff;
+  border: 1.5px solid #dde3ec;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #475569;
+}
+
+.tool-btn:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+
+.tool-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tool-btn.success {
+  background: #22c55e;
+  color: white;
+  border-color: #22c55e;
+}
+
+.tool-btn.cancel {
+  background: #ef4444;
+  color: white;
+  border-color: #ef4444;
+}
+
+.tool-btn.export {
+  margin-left: auto;
+  background: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+.draw-hint {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+
