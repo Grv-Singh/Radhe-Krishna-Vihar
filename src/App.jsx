@@ -228,12 +228,6 @@ export default function App() {
             </button>
           </div>
         </div>
-        <div className="legend">
-          <div className="legend-item"><span className="legend-dot available" />Available</div>
-          <div className="legend-item"><span className="legend-dot booked" />Booked</div>
-          <div className="legend-item"><span className="legend-dot hold" />Hold</div>
-          <div className="legend-item"><span className="legend-dot sold" />Sold</div>
-        </div>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
            <span style={{ fontSize: '0.8rem', marginRight: '10px' }}>Mode: {authStatus === 'edit' ? 'Edit' : 'View'}</span>
            <button onClick={() => { 
