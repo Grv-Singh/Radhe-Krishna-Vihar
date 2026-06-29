@@ -44,7 +44,7 @@ function PlotCard({ plot, onToggle }) {
 }
 
 export default function App() {
-  const [authStatus, setAuthStatus] = useState('pending'); // 'pending' | 'view' | 'edit'
+  const [authStatus, setAuthStatus] = useState('view'); // 'pending' | 'view' | 'edit'
   const [pin, setPin] = useState('');
   
   const [plots, setPlots] = useState(plotsData);
@@ -196,7 +196,16 @@ export default function App() {
         </div>
         <div style={{ marginLeft: 'auto' }}>
            <span style={{ fontSize: '0.8rem', marginRight: '10px' }}>Mode: {authStatus === 'edit' ? 'Edit' : 'View'}</span>
-           <button onClick={() => { setAuthStatus('pending'); setEditMode(false); }} style={{ padding: '4px 10px', borderRadius: '4px', border: '1px solid #fff', background: 'transparent', color: '#fff', cursor: 'pointer' }}>Logout</button>
+           <button onClick={() => { 
+             if (authStatus === 'edit') {
+               setAuthStatus('view');
+               setEditMode(false);
+             } else {
+               setAuthStatus('pending');
+             }
+           }} style={{ padding: '4px 10px', borderRadius: '4px', border: '1px solid #fff', background: 'transparent', color: '#fff', cursor: 'pointer' }}>
+             {authStatus === 'edit' ? 'Logout' : 'Admin Login'}
+           </button>
         </div>
       </header>
 
