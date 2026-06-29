@@ -84,8 +84,8 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  // TODO: Add your Google Apps Script Web App URL here
-  const GOOGLE_SHEETS_API_URL = ""; 
+  // Google Apps Script Web App URL
+  const GOOGLE_SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbyuerPBJq2O3wDbmLOwl9dsSTKwzYXvPAMrrCY0WhAgEVGANVTZqh0Pmou7fFykNQNG/exec"; 
 
   useEffect(() => {
     if (!GOOGLE_SHEETS_API_URL) return;
@@ -157,6 +157,9 @@ export default function App() {
       try {
         await fetch(GOOGLE_SHEETS_API_URL, {
           method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+          },
           body: JSON.stringify({ id, status: nextStatus })
         });
       } catch (err) {
