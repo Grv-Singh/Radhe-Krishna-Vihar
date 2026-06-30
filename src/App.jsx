@@ -401,7 +401,7 @@ export default function App() {
 
         {groupedPlots.map((group, idx) => (
           <div className="section" key={idx} style={{ marginBottom: '2rem' }}>
-            <h2 style={{ color: 'rgba(255,255,255,0.9)', marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', fontSize: '1.2rem', textAlign: 'left' }}>{group.title}</h2>
+            <h2 style={{ color: 'black', marginBottom: '1rem', borderBottom: '1px solid rgba(0,0,0,0.1)', paddingBottom: '0.5rem', fontSize: '1.2rem', textAlign: 'left', fontWeight: 'bold' }}>{group.title}</h2>
             <div className="plot-grid">
               {group.items.map(plot => (
                 <PlotCard 
