@@ -373,8 +373,8 @@ export default function App() {
                   {/* Base polygon for status color and hover target */}
                   <polygon 
                     points={pointsStr}
-                    fill={authStatus === 'edit' ? (STATUS_COLORS[plot.status] || 'rgba(0,0,0,0.1)') : 'transparent'}
-                    stroke={authStatus === 'edit' ? (STATUS_STROKES[plot.status] || '#ccc') : 'transparent'}
+                    fill="transparent"
+                    stroke="transparent"
                     strokeWidth={2}
                     style={{ cursor: authStatus === 'edit' ? 'pointer' : 'default', transition: 'all 0.2s' }}
                     onClick={(e) => {
@@ -403,7 +403,7 @@ export default function App() {
                     onMouseLeave={(e) => {
                       if (mappingMode) return;
                       e.currentTarget.setAttribute('stroke-width', '2');
-                      e.currentTarget.setAttribute('stroke', authStatus === 'edit' ? (STATUS_STROKES[plot.status] || '#ccc') : 'transparent');
+                      e.currentTarget.setAttribute('stroke', 'transparent');
                     }}
                   >
                     <title>{plot.id} - {plot.status}</title>
