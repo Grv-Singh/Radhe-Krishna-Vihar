@@ -365,45 +365,63 @@ export default function App() {
               if (!plot.points || plot.points.length === 0) return null;
               const pointsStr = plot.points.map(p => `${p.x},${p.y}`).join(' ');
               const isHighlighted = highlightedPlotId === plot.id;
+              const cx = plot.points.reduce((sum, p) => sum + p.x, 0) / plot.points.length;
+              const cy = plot.points.reduce((sum, p) => sum + p.y, 0) / plot.points.length;
+
               return (
-                <polygon 
-                  key={plot.id}
-                  points={pointsStr}
-                  fill={isHighlighted ? 'rgba(59, 130, 246, 0.6)' : (STATUS_COLORS[plot.status] || 'rgba(0,0,0,0.1)')}
-                  stroke={isHighlighted ? '#2563eb' : (STATUS_STROKES[plot.status] || '#ccc')}
-                  strokeWidth={isHighlighted ? 4 : 2}
-                  style={{ cursor: authStatus === 'edit' ? 'pointer' : 'default', transition: 'all 0.2s' }}
-                  onClick={(e) => {
-                    if (mappingMode) return;
-                    e.stopPropagation();
-                    if (authStatus === 'edit') {
-                       togglePlotStatus(plot.id);
-                    } else {
-                       const newId = highlightedPlotId === plot.id ? null : plot.id;
-                       setHighlightedPlotId(newId);
-                       if (newId) {
-                         const card = document.getElementById(`card-${plot.id}`);
-                         if (card) {
-                           const yOffset = -window.innerHeight / 2;
-                           const y = card.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                           window.scrollTo({top: y, behavior: 'smooth'});
+                <g key={plot.id}>
+                  {/* Base polygon for status color and hover target */}
+                  <polygon 
+                    points={pointsStr}
+                    fill={isHighlighted ? 'transparent' : (STATUS_COLORS[plot.status] || 'rgba(0,0,0,0.1)')}
+                    stroke={isHighlighted ? 'transparent' : (STATUS_STROKES[plot.status] || '#ccc')}
+                    strokeWidth={2}
+                    style={{ cursor: authStatus === 'edit' ? 'pointer' : 'default', transition: 'all 0.2s' }}
+                    onClick={(e) => {
+                      if (mappingMode) return;
+                      e.stopPropagation();
+                      if (authStatus === 'edit') {
+                         togglePlotStatus(plot.id);
+                      } else {
+                         const newId = highlightedPlotId === plot.id ? null : plot.id;
+                         setHighlightedPlotId(newId);
+                         if (newId) {
+                           const card = document.getElementById(`card-${plot.id}`);
+                           if (card) {
+                             const yOffset = -window.innerHeight / 2;
+                             const y = card.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                             window.scrollTo({top: y, behavior: 'smooth'});
+                           }
                          }
-                       }
-                    }
-                  }}
-                  onMouseEnter={(e) => {
-                    if (mappingMode) return;
-                    e.currentTarget.setAttribute('stroke-width', '4');
-                    e.currentTarget.setAttribute('stroke', '#fff');
-                  }}
-                  onMouseLeave={(e) => {
-                    if (mappingMode) return;
-                    e.currentTarget.setAttribute('stroke-width', isHighlighted ? '4' : '2');
-                    e.currentTarget.setAttribute('stroke', isHighlighted ? '#2563eb' : (STATUS_STROKES[plot.status] || '#ccc'));
-                  }}
-                >
-                  <title>{plot.id} - {plot.status}</title>
-                </polygon>
+                      }
+                    }}
+                    onMouseEnter={(e) => {
+                      if (mappingMode) return;
+                      e.currentTarget.setAttribute('stroke-width', '4');
+                      e.currentTarget.setAttribute('stroke', '#fff');
+                    }}
+                    onMouseLeave={(e) => {
+                      if (mappingMode) return;
+                      e.currentTarget.setAttribute('stroke-width', '2');
+                      e.currentTarget.setAttribute('stroke', isHighlighted ? 'transparent' : (STATUS_STROKES[plot.status] || '#ccc'));
+                    }}
+                  >
+                    <title>{plot.id} - {plot.status}</title>
+                  </polygon>
+                  
+                  {/* Yellow circle highlight */}
+                  {isHighlighted && (
+                    <circle
+                      cx={cx}
+                      cy={cy}
+                      r="40"
+                      fill="rgba(255, 235, 59, 0.4)"
+                      stroke="#fbc02d"
+                      strokeWidth="4"
+                      style={{ pointerEvents: 'none' }}
+                    />
+                  )}
+                </g>
               );
             })}
 
