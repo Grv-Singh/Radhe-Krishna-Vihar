@@ -421,14 +421,47 @@ export default function App() {
             value={JSON.stringify(mappedData, null, 2)} 
             style={{ width: '100%', height: '150px', fontFamily: 'monospace', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }} 
           />
-          <button 
-            onClick={() => {
-              if (confirm('Clear all mapped data?')) setMappedData([]);
-            }}
-            style={{ marginTop: '10px', padding: '8px 16px', background: '#f44336', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-          >
-            Clear Data
-          </button>
+          <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+            <button 
+              onClick={() => {
+                if (confirm('Clear all mapped data?')) setMappedData([]);
+              }}
+              style={{ padding: '8px 16px', background: '#f44336', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+            >
+              Clear Data
+            </button>
+            <button 
+              onClick={() => {
+                // Merge mappedData into current plots
+                const newPlots = [...plots];
+                mappedData.forEach(md => {
+                  const idx = newPlots.findIndex(p => p.id === md.id);
+                  if (idx >= 0) newPlots[idx].points = md.points;
+                });
+                
+                // Format the string manually to match data.js structure cleanly
+                let dataStr = "export const plotsData = [\n";
+                newPlots.forEach((p, idx) => {
+                  let pStr = JSON.stringify(p);
+                  // Remove quotes from keys for cleaner JS syntax
+                  pStr = pStr.replace(/"([^(")"]+)":/g, "$1:");
+                  dataStr += "  " + pStr + (idx < newPlots.length - 1 ? ",\n" : "\n");
+                });
+                dataStr += "];\n";
+                
+                const blob = new Blob([dataStr], { type: 'text/javascript' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'data.js';
+                a.click();
+                URL.revokeObjectURL(url);
+              }}
+              style={{ padding: '8px 16px', background: '#4caf50', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+            >
+              Export data.js
+            </button>
+          </div>
         </div>
       )}
 
