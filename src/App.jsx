@@ -168,19 +168,7 @@ export default function App() {
     }
   };
 
-  const handleDownloadCSV = () => {
-    const headers = ['Plot ID', 'Type', 'Sq.Yd', 'Status'];
-    const rows = plots.map(p => [p.id, p.type, p.sqyd, p.status]);
-    const csvContent = "data:text/csv;charset=utf-8," 
-      + [headers.join(','), ...rows.map(e => e.join(','))].join("\n");
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "plots_status.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+
 
 
 
@@ -205,8 +193,8 @@ export default function App() {
 
     return [...filtered].sort((a, b) => {
       const getPrefixWeight = (id) => {
-        if (id.startsWith('C')) return 1;
-        if (id.startsWith('S')) return 2;
+        if (id.startsWith('S')) return 1;
+        if (id.startsWith('C')) return 2;
         return 3;
       };
       const weightA = getPrefixWeight(a.id);
@@ -218,13 +206,13 @@ export default function App() {
 
   const groupedPlots = useMemo(() => {
     const groups = [
-      { title: 'Commercial Plots', prefix: 'C', items: [] },
       { title: 'Shops', prefix: 'S', items: [] },
+      { title: 'Commercial Plots', prefix: 'C', items: [] },
       { title: 'Residential Plots', prefix: 'Plot', items: [] }
     ];
     sortedPlots.forEach(p => {
-      if (p.id.startsWith('C')) groups[0].items.push(p);
-      else if (p.id.startsWith('S')) groups[1].items.push(p);
+      if (p.id.startsWith('S')) groups[0].items.push(p);
+      else if (p.id.startsWith('C')) groups[1].items.push(p);
       else groups[2].items.push(p);
     });
     return groups.filter(g => g.items.length > 0);
@@ -291,12 +279,7 @@ export default function App() {
            }} style={{ padding: '4px 10px', borderRadius: '4px', border: '1px solid #fff', background: 'transparent', color: '#fff', cursor: 'pointer', marginRight: '10px' }}>
              {authStatus === 'edit' ? 'Logout' : 'Admin Login'}
            </button>
-           <button onClick={handleDownloadCSV} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '4px', border: '1px solid #10b981', background: '#10b981', color: '#fff', cursor: 'pointer' }}>
-             <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-               <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-             </svg>
-             Export CSV
-           </button>
+
         </div>
       </header>
 
