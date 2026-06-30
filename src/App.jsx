@@ -85,38 +85,7 @@ export default function App() {
   const [currentPoints, setCurrentPoints] = useState([]);
   const [mappedData, setMappedData] = useState([]);
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  
-  // Google Apps Script Web App URL
-  const GOOGLE_SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbyuerPBJq2O3wDbmLOwl9dsSTKwzYXvPAMrrCY0WhAgEVGANVTZqh0Pmou7fFykNQNG/exec"; 
-
-  useEffect(() => {
-    if (!GOOGLE_SHEETS_API_URL) return;
-    
-    const fetchPlots = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(GOOGLE_SHEETS_API_URL);
-        const result = await res.json();
-        if (result.status === 'success' && result.data.length > 0) {
-          // Parse values safely
-          const validData = result.data.filter(p => p.id).map(p => ({
-            ...p,
-            sqyd: parseFloat(p.sqyd) || 0,
-            rate: parseFloat(p.rate) || 0
-          }));
-          setPlots(validData);
-        } else {
-          setError("Failed to load live data");
-        }
-      } catch (e) {
-        setError("Error connecting to Google Sheets");
-      }
-      setLoading(false);
-    }
-    fetchPlots();
-  }, []);
+  // External backend sync removed
 
   const [imageSize, setImageSize] = useState({ width: 2000, height: 1500 });
   const imgRef = useRef(null);
@@ -156,20 +125,7 @@ export default function App() {
     // Optimistic UI Update
     setPlots(prev => prev.map(p => p.id === id ? { ...p, status: nextStatus } : p));
 
-    // Sync to Google Sheets
-    if (GOOGLE_SHEETS_API_URL) {
-      try {
-        await fetch(GOOGLE_SHEETS_API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8',
-          },
-          body: JSON.stringify({ id, status: nextStatus })
-        });
-      } catch (err) {
-        console.error("Failed to sync to Google Sheets", err);
-      }
-    }
+    // External backend sync removed
   };
 
 
