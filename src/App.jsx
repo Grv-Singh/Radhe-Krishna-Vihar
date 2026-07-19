@@ -76,21 +76,26 @@ export default function App() {
   const [authStatus, setAuthStatus] = useState('view'); // 'pending' | 'view' | 'edit'
   const [pin, setPin] = useState('');
   
-  const [plots, setPlots] = useState(plotsData);
+  // Load plots: merge persisted statuses from localStorage over the default data
+  const [plots, setPlots] = useState(() => {
+    try {
+      const saved = localStorage.getItem('rkv_plot_statuses');
+      if (saved) {
+        const savedStatuses = JSON.parse(saved); // { plotId: status, ... }
+        return plotsData.map(p => ({
+          ...p,
+          status: savedStatuses[p.id] ?? p.status
+        }));
+      }
+    } catch (e) {}
+    return plotsData;
+  });
   const [statusFilter, setStatusFilter] = useState('All');
   const [sizeFilter, setSizeFilter] = useState('All');
   const [highlightedPlotId, setHighlightedPlotId] = useState(null);
 
-  const [mappingMode, setMappingMode] = useState(false);
-  const [currentPoints, setCurrentPoints] = useState([]);
-  const [mappedData, setMappedData] = useState([]);
-
-  // External backend sync removed
-
   const [imageSize, setImageSize] = useState({ width: 2000, height: 1500 });
   const imgRef = useRef(null);
-
-
 
   useEffect(() => {
     if (imgRef.current) {
@@ -122,10 +127,16 @@ export default function App() {
     const nextIdx = (statuses.indexOf(plotToUpdate.status) + 1) % statuses.length;
     const nextStatus = statuses[nextIdx];
 
-    // Optimistic UI Update
-    setPlots(prev => prev.map(p => p.id === id ? { ...p, status: nextStatus } : p));
-
-    // External backend sync removed
+    setPlots(prev => {
+      const updated = prev.map(p => p.id === id ? { ...p, status: nextStatus } : p);
+      // Persist all statuses to localStorage
+      try {
+        const toSave = {};
+        updated.forEach(p => { toSave[p.id] = p.status; });
+        localStorage.setItem('rkv_plot_statuses', JSON.stringify(toSave));
+      } catch (e) {}
+      return updated;
+    });
   };
 
 
@@ -229,13 +240,6 @@ export default function App() {
           </div>
         </div>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
-           {authStatus === 'edit' && (
-             <div style={{ display: 'flex', gap: '10px' }}>
-               <button onClick={() => setMappingMode(!mappingMode)} style={{ padding: '4px 10px', borderRadius: '4px', border: '1px solid #ffeb3b', background: mappingMode ? '#ffeb3b' : 'transparent', color: mappingMode ? '#000' : '#ffeb3b', cursor: 'pointer' }}>
-                 {mappingMode ? 'Disable Map Mode' : 'Enable Map Mode'}
-               </button>
-             </div>
-           )}
            <span style={{ fontSize: '0.8rem', marginRight: '10px' }}>Mode: {authStatus === 'edit' ? 'Edit' : 'View'}</span>
            <button onClick={() => { 
              if (authStatus === 'edit') {
@@ -246,7 +250,6 @@ export default function App() {
            }} style={{ padding: '4px 10px', borderRadius: '4px', border: '1px solid #fff', background: 'transparent', color: '#fff', cursor: 'pointer', marginRight: '10px' }}>
              {authStatus === 'edit' ? 'Logout' : 'Admin Login'}
            </button>
-
         </div>
       </header>
 
@@ -271,52 +274,8 @@ export default function App() {
             viewBox={`0 0 ${imageSize.width} ${imageSize.height}`}
             width="100%" 
             height="100%"
-            style={{ cursor: mappingMode ? 'crosshair' : 'default' }}
-            onClick={(e) => {
-              if (mappingMode) {
-                const rect = e.currentTarget.getBoundingClientRect();
-                const scaleX = imageSize.width / rect.width;
-                const scaleY = imageSize.height / rect.height;
-                const x = (e.clientX - rect.left) * scaleX;
-                const y = (e.clientY - rect.top) * scaleY;
-                const newPts = [...currentPoints, {x: Math.round(x), y: Math.round(y)}];
-                setCurrentPoints(newPts);
-                
-                if (newPts.length === 4) {
-                   const pid = prompt("Enter Plot ID (e.g. C-10, S-05, Plot 47)");
-                   if (pid) {
-                     setMappedData(prev => [...prev, {id: pid, points: newPts}]);
-                   }
-                   setCurrentPoints([]);
-                }
-              }
-            }}
+            style={{ cursor: 'default' }}
           >
-            {/* Draw mapping mode points */}
-            {currentPoints.map((pt, i) => (
-              <circle key={i} cx={pt.x} cy={pt.y} r="8" fill="red" />
-            ))}
-            {currentPoints.length > 1 && (
-              <polyline 
-                points={currentPoints.map(p => `${p.x},${p.y}`).join(' ')} 
-                fill="none" 
-                stroke="red" 
-                strokeWidth="4" 
-                strokeDasharray="5,5" 
-              />
-            )}
-            {mappedData.map(md => (
-              <g key={`map-${md.id}`}>
-                <polygon 
-                  points={md.points.map(p => `${p.x},${p.y}`).join(' ')} 
-                  fill="rgba(255,235,59,0.3)" 
-                  stroke="#ffeb3b" 
-                  strokeWidth="3" 
-                />
-                <text x={md.points[0].x} y={md.points[0].y} fill="#ffeb3b" fontSize="24" fontWeight="bold">{md.id}</text>
-              </g>
-            ))}
-
             {plots.map(plot => {
               if (!plot.points || plot.points.length === 0) return null;
               const pointsStr = plot.points.map(p => `${p.x},${p.y}`).join(' ');
@@ -334,7 +293,6 @@ export default function App() {
                     strokeWidth={2}
                     style={{ cursor: authStatus === 'edit' ? 'pointer' : 'default', transition: 'all 0.2s' }}
                     onClick={(e) => {
-                      if (mappingMode) return;
                       e.stopPropagation();
                       if (authStatus === 'edit') {
                          togglePlotStatus(plot.id);
@@ -352,12 +310,10 @@ export default function App() {
                       }
                     }}
                     onMouseEnter={(e) => {
-                      if (mappingMode) return;
                       e.currentTarget.setAttribute('stroke-width', '4');
                       e.currentTarget.setAttribute('stroke', '#fff');
                     }}
                     onMouseLeave={(e) => {
-                      if (mappingMode) return;
                       e.currentTarget.setAttribute('stroke-width', '2');
                       e.currentTarget.setAttribute('stroke', 'transparent');
                     }}
@@ -386,58 +342,6 @@ export default function App() {
         </div>
       </div>
 
-      {mappingMode && (
-        <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', marginBottom: '20px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
-          <h3 style={{ marginTop: 0, color: '#333' }}>Mapping Mode Data</h3>
-          <p style={{ fontSize: '0.9rem', color: '#666' }}>Click 4 corners of a plot on the map to define it. The generated coordinates will appear here.</p>
-          <textarea 
-            readOnly 
-            value={JSON.stringify(mappedData, null, 2)} 
-            style={{ width: '100%', height: '150px', fontFamily: 'monospace', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }} 
-          />
-          <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-            <button 
-              onClick={() => {
-                if (confirm('Clear all mapped data?')) setMappedData([]);
-              }}
-              style={{ padding: '8px 16px', background: '#f44336', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-            >
-              Clear Data
-            </button>
-            <button 
-              onClick={() => {
-                // Merge mappedData into current plots
-                const newPlots = [...plots];
-                mappedData.forEach(md => {
-                  const idx = newPlots.findIndex(p => p.id === md.id);
-                  if (idx >= 0) newPlots[idx].points = md.points;
-                });
-                
-                // Format the string manually to match data.js structure cleanly
-                let dataStr = "export const plotsData = [\n";
-                newPlots.forEach((p, idx) => {
-                  let pStr = JSON.stringify(p);
-                  // Remove quotes from keys for cleaner JS syntax
-                  pStr = pStr.replace(/"([^(")"]+)":/g, "$1:");
-                  dataStr += "  " + pStr + (idx < newPlots.length - 1 ? ",\n" : "\n");
-                });
-                dataStr += "];\n";
-                
-                const blob = new Blob([dataStr], { type: 'text/javascript' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'data.js';
-                a.click();
-                URL.revokeObjectURL(url);
-              }}
-              style={{ padding: '8px 16px', background: '#4caf50', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-            >
-              Export data.js
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Dashboard */}
       <div className="dashboard" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around', backgroundColor: '#ffffff', padding: '20px 10px', borderRadius: '12px', marginBottom: '20px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}>
