@@ -72,30 +72,39 @@ const CircularProgress = ({ percent, color, label, value }) => {
   )
 }
 
+// JSONBin config
+const BIN_ID = '6a5c9af0f5f4af5e29a35f76';
+const BIN_KEY = '$2a$10$Tl.D.WwzbfObnzBa0PK5r.njLZCoL51NEmUpjkmKZfQjAH0IN3CyW';
+const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const BIN_HEADERS = { 'Content-Type': 'application/json', 'X-Master-Key': BIN_KEY };
+
 export default function App() {
   const [authStatus, setAuthStatus] = useState('view'); // 'pending' | 'view' | 'edit'
   const [pin, setPin] = useState('');
   
-  // Load plots: merge persisted statuses from localStorage over the default data
-  const [plots, setPlots] = useState(() => {
-    try {
-      const saved = localStorage.getItem('rkv_plot_statuses');
-      if (saved) {
-        const savedStatuses = JSON.parse(saved); // { plotId: status, ... }
-        return plotsData.map(p => ({
-          ...p,
-          status: savedStatuses[p.id] ?? p.status
-        }));
-      }
-    } catch (e) {}
-    return plotsData;
-  });
+  const [plots, setPlots] = useState(plotsData);
   const [statusFilter, setStatusFilter] = useState('All');
   const [sizeFilter, setSizeFilter] = useState('All');
   const [highlightedPlotId, setHighlightedPlotId] = useState(null);
 
   const [imageSize, setImageSize] = useState({ width: 2000, height: 1500 });
   const imgRef = useRef(null);
+
+  // Fetch latest statuses from JSONBin on mount
+  useEffect(() => {
+    fetch(`${BIN_URL}/latest`, { headers: BIN_HEADERS })
+      .then(r => r.json())
+      .then(json => {
+        const savedStatuses = json.record;
+        if (savedStatuses && typeof savedStatuses === 'object') {
+          setPlots(prev => prev.map(p => ({
+            ...p,
+            status: savedStatuses[p.id] ?? p.status
+          })));
+        }
+      })
+      .catch(() => {}); // silently fall back to defaults
+  }, []);
 
   useEffect(() => {
     if (imgRef.current) {
@@ -127,14 +136,19 @@ export default function App() {
     const nextIdx = (statuses.indexOf(plotToUpdate.status) + 1) % statuses.length;
     const nextStatus = statuses[nextIdx];
 
+    // Optimistic UI update
     setPlots(prev => {
       const updated = prev.map(p => p.id === id ? { ...p, status: nextStatus } : p);
-      // Persist all statuses to localStorage
-      try {
-        const toSave = {};
-        updated.forEach(p => { toSave[p.id] = p.status; });
-        localStorage.setItem('rkv_plot_statuses', JSON.stringify(toSave));
-      } catch (e) {}
+
+      // Save to JSONBin (all statuses)
+      const toSave = {};
+      updated.forEach(p => { toSave[p.id] = p.status; });
+      fetch(BIN_URL, {
+        method: 'PUT',
+        headers: BIN_HEADERS,
+        body: JSON.stringify(toSave)
+      }).catch(() => {});
+
       return updated;
     });
   };
